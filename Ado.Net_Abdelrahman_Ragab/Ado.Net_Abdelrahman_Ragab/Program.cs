@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace Ado.Net_Abdelrahman_Ragab
 {
@@ -16,11 +17,8 @@ namespace Ado.Net_Abdelrahman_Ragab
             sqlConnection.ConnectionString = "Data Source = .;" +
                                              "Initial Catalog = ITI;" +
                                              "Integrated Security = true; " +
-                                             "Encrypt=true;" +
-                                             "TrustServerCertificate=true;";
-
-
-            #region retrieve the data using SqlDataReader
+                                             "Encrypt = true;" +
+                                             "TrustServerCertificate = true;";
 
             // Create a new SqlCommand object to execute SQL queries
             SqlCommand sqlCommand = new SqlCommand();
@@ -37,6 +35,8 @@ namespace Ado.Net_Abdelrahman_Ragab
             // Assign the open SqlConnection to the SqlCommand
             sqlCommand.Connection = sqlConnection;
 
+            #region retrieve the data using SqlDataReader
+            /*
             // Execute the SQL query and retrieve the data using SqlDataReader
             SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
 
@@ -49,6 +49,30 @@ namespace Ado.Net_Abdelrahman_Ragab
 
             // Close the SQL connection after the operation is done
             sqlConnection.Close();
+            */
+            #endregion
+
+            #region retrieve the data using SqlDataAdaptor
+
+            // Create a SqlDataAdapter object to act as a bridge between the SQL command and the DataTable.
+            // The SqlDataAdapter will execute the SQL command and populate the DataTable with the results.
+            SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand);
+
+            // Create a new DataTable object to store the results of the SQL query in-memory.
+            DataTable dataTable = new DataTable();
+
+            // Fill the DataTable with the data retrieved by the SqlDataAdapter from the database.
+            // The Fill method executes the SQL query and loads the result into the DataTable.
+            adapter.Fill(dataTable);
+
+            // Iterate over each row in the DataTable.
+            // The Rows collection contains all rows retrieved from the SQL query.
+            foreach (DataRow row in dataTable.Rows)
+            {
+                // Access and print the values of the "Top_Id" and "Top_Name" columns for each row.
+                // The row["ColumnName"] syntax retrieves the value from the specified column in the current row.
+                Console.WriteLine($"Top_Id: {row["Top_Id"]}\t Top_Name: {row["Top_Name"]}");
+            }
 
             #endregion
 
